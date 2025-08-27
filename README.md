@@ -22,6 +22,7 @@ Documentation on the contents, usage and features of the tinyODIN HDL source cod
 ## Licenses
 
 > *Copyright (C) 2019-2022, Université catholique de Louvain (UCLouvain, Belgium), University of Zürich (UZH, Switzerland), Katholieke Universiteit Leuven (KU Leuven, Belgium), and Delft University of Technology (TU Delft, Netherlands)*
+> *Copyright (C) Copyright (C) 2025 University of Groningen (Fernando M. Quintana, H. Basri Bilge)*
 
 > *The HDL source code of tinyODIN is under a Solderpad Hardware License v2.1 (see [LICENSE](LICENSE) file or https://solderpad.org/licenses/SHL-2.1/).*
 

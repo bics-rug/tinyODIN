@@ -1,6 +1,7 @@
 # The tinyODIN Low-Cost Digital Spiking Neural Network (SNN) Processor Documentation
 
 > Copyright (C) 2019-2022, Université catholique de Louvain (UCLouvain, Belgium), University of Zürich (UZH, Switzerland), Katholieke Universiteit Leuven (KU Leuven, Belgium), and Delft University of Technology (TU Delft, Netherlands)
+> Copyright (C) 2025 University of Groningen (Fernando M. Quintana, H. Basri Bilge)
 
 > The documentation for tinyODIN is under a Creative Commons Attribution 4.0 International License (see [doc/LICENSE](LICENSE) file or http://creativecommons.org/licenses/by/4.0/), while the tinyODIN HDL source code is under a Solderpad Hardware License v2.1 (see [LICENSE](../LICENSE) file or https://solderpad.org/licenses/SHL-2.1/).
 

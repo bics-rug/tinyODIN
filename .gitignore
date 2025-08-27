@@ -1,0 +1,111 @@
+# Vivado .gitignore
+
+# Vivado project files (these can be regenerated from TCL scripts)
+*.xpr
+*.xpfm
+
+# Vivado generated directories
+.Xil/
+.hbs/
+.cache/
+vivado.jou
+vivado.log
+hs_err_pid*.log
+
+# Build outputs
+*.bit
+*.ltx
+*.mmi
+*.hwdef
+*.sysdef
+
+# Implementation results
+*_impl_1/
+*_synth_1/
+*.runs/
+*.sim/
+*.ip_user_files/
+*.gen/
+*.hw/
+*.cache/
+
+# Checkpoint files
+*.dcp
+
+# Reports
+*.rpt
+*.html
+*.xml
+*.jou
+*.log
+*.str
+*.debug
+*.ltx
+
+# IP core generated files
+*.xci
+ip_repo/
+managed_ip_project/
+
+# Block Design generated files (optional - see note below)
+*.bd
+*.bxml
+
+# Simulation files
+xsim.dir/
+*.wdb
+*.wcfg
+xvlog.log
+xvlog.pb
+xelab.log
+xelab.pb
+xsim.log
+*.protoinst
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Backup files
+*.bak
+*.tmp
+*.orig
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# Custom IP packaging
+component.xml
+*.zip
+
+# Board files (if not custom)
+# board_files/
+
+# Constraints timing reports
+*_timing_summary.rpt
+*_power.rpt
+*_utilization_*.rpt
+
+# SDK/Vitis workspace (if applicable)
+.metadata/
+.sdk/
+vitis_workspace/
+*.bit.bin
+*.elf
+*.srec
+
+# HLS specific (if using HLS)
+*.prj/
+solution*/
+csim/
+sim/
+syn/
+impl/

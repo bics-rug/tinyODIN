@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 // Copyright (C) 2019-2022, Université catholique de Louvain (UCLouvain, Belgium), University of Zürich (UZH, Switzerland),
 //         Katholieke Universiteit Leuven (KU Leuven, Belgium), and Delft University of Technology (TU Delft, Netherlands).
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
@@ -44,7 +45,7 @@ module spi_slave #(
     output reg  [      2*M-1:0] CTRL_SPI_ADDR,
     output reg  [          1:0] CTRL_OP_CODE,
     output reg  [      2*M-1:0] CTRL_PROG_DATA,
-    input  wire [         31:0] SYNARRAY_RDATA,
+    input  wire [         24:0] SYNARRAY_RDATA,
     input  wire [         31:0] NEUR_STATE,
 
     // Configuration registers output -------------------------

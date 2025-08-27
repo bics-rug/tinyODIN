@@ -44,11 +44,6 @@ module lif_neuron (
     wire [11:0] state_leakp_ovfl, state_leakn_ovfl, state_syn_ovfl;
     wire [11:0] state_leakp     , state_leakn     , state_syn     ;
     wire [11:0] syn_weight_ext;
-    wire        event_leak;
-    wire        event_syn;
-
-    assign event_leak =  syn_event  &  time_ref;
-    assign event_syn  =  syn_event  & ~time_ref;
 
     assign spike_out       = ~state_core_next_i[11] & (state_core_next_i >= param_thr);
     assign state_core_next =  spike_out ? 8'd0 : state_core_next_i;
@@ -57,12 +52,12 @@ module lif_neuron (
 
     always @(*) begin 
 
-            if (event_leak)
+            if (time_ref)
                 if (state_core[11])
                     state_core_next_i = state_leakp;
                 else
                     state_core_next_i = state_leakn;
-            else if (event_syn)
+            else if (syn_event)
                     state_core_next_i = state_syn;
             else 
                     state_core_next_i = state_core;

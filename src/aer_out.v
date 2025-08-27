@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 // Copyright (C) 2019-2022, Université catholique de Louvain (UCLouvain, Belgium), University of Zürich (UZH, Switzerland),
 //         Katholieke Universiteit Leuven (KU Leuven, Belgium), and Delft University of Technology (TU Delft, Netherlands).
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
@@ -40,33 +41,60 @@ module aer_out #(
     
     // Neuron data inputs -----------------------------
     input  wire           NEUR_EVENT_OUT,
-    input  wire [  M-1:0] CTRL_NEURMEM_ADDR,
+    input  wire [  M-1:0] ADDR_D,
+    input  wire [    3:0] SYN_WEIGHT,
     
     // Input from scheduler ---------------------------
-    input  wire [   11:0] SCHED_DATA_OUT,
+    input  wire [   12:0] SCHED_DATA_OUT,
   
     // Input from controller --------------------------
     input  wire           CTRL_AEROUT_POP_NEUR,
     
     // Output to controller ---------------------------
-    output reg            AEROUT_CTRL_BUSY,
+    output wire            AEROUT_CTRL_BUSY,
     
-	// Output 8-bit AER link --------------------------
-	output reg  [  M-1:0] AEROUT_ADDR, 
-	output reg  	      AEROUT_REQ,
-	input  wire 	      AEROUT_ACK
+	// Output 9-bit AER link --------------------------
+	output wire  [    M-1:0] AEROUT_ADDR,
+	output wire    	        AEROUT_REQ,
+	input  wire 	        AEROUT_ACK
 );
 
 
-   reg            AEROUT_ACK_sync_int, AEROUT_ACK_sync, AEROUT_ACK_sync_del; 
-   wire           AEROUT_ACK_sync_negedge;
-   wire           rst_activity;
-   
-   
-   assign rst_activity = RST || SPI_GATE_ACTIVITY_sync;
+    reg            AEROUT_ACK_sync_int, AEROUT_ACK_sync, AEROUT_ACK_sync_del;
+    wire           AEROUT_ACK_sync_negedge;
+    wire           rst_activity;
+
+    reg            AEROUT_CTRL_BUSY_reg;
+    reg            AEROUT_REQ_reg;
+    reg    [M-1:0] AEROUT_ADDR_reg;   
+
+    assign rst_activity = RST || SPI_GATE_ACTIVITY_sync;
+
+    assign AEROUT_CTRL_BUSY = AEROUT_CTRL_BUSY_reg;
+    assign AEROUT_ADDR = AEROUT_ADDR_reg;
+    assign AEROUT_REQ  = AEROUT_REQ_reg;
+
+    //ILA
+    reg            DEBUG_SGNL = 1'b0;
+
+    always @(posedge CLK) begin
+        DEBUG_SGNL <= ~DEBUG_SGNL;
+	end
+
+    ila_3 aer_out_ila_inst (
+	.clk(CLK), // input wire clk
+
+
+	.probe0(DEBUG_SGNL), // input wire [0:0]  probe0  
+	.probe1(AEROUT_ADDR), // input wire [7:0]  probe1 
+	.probe2(AEROUT_REQ), // input wire [0:0]  probe2 
+	.probe3(AEROUT_ACK), // input wire [0:0]  probe3 
+	.probe4(NEUR_EVENT_OUT) // input wire [0:0]  probe4
+
+);
    
    // Sync barrier
-   always @(posedge CLK, posedge rst_activity) begin
+   always @(posedge CLK) begin
 		if (rst_activity) begin
 			AEROUT_ACK_sync_int <= 1'b0;
 			AEROUT_ACK_sync	    <= 1'b0;
@@ -82,23 +110,29 @@ module aer_out #(
     
     
     // Output AER interface
-    always @(posedge CLK, posedge rst_activity) begin
+    always @(posedge CLK) begin
 		if (rst_activity) begin
-			AEROUT_ADDR             <= 8'b0;
-			AEROUT_REQ              <= 1'b0;
-            AEROUT_CTRL_BUSY        <= 1'b0;
+			AEROUT_ADDR_reg             <= 8'b0;
+			AEROUT_REQ_reg              <= 1'b0;
+            AEROUT_CTRL_BUSY_reg        <= 1'b0;
 		end else begin
-            if ((SPI_AER_SRC_CTRL_nNEUR ? CTRL_AEROUT_POP_NEUR : NEUR_EVENT_OUT) && ~AEROUT_ACK_sync) begin
-                AEROUT_ADDR      <= SPI_AER_SRC_CTRL_nNEUR ? SCHED_DATA_OUT[M-1:0] : CTRL_NEURMEM_ADDR;
-                AEROUT_REQ       <= 1'b1;
-                AEROUT_CTRL_BUSY <= 1'b1;
+            if (NEUR_EVENT_OUT && ~AEROUT_ACK_sync) begin
+                AEROUT_ADDR_reg      <= ADDR_D;
+                AEROUT_REQ_reg       <= 1'b1;
+                AEROUT_CTRL_BUSY_reg <= 1'b1;
             end else if (AEROUT_ACK_sync) begin
-                AEROUT_REQ       <= 1'b0;
-                AEROUT_CTRL_BUSY <= 1'b1;
+                AEROUT_REQ_reg       <= 1'b0;
+                AEROUT_CTRL_BUSY_reg <= 1'b1;
             end else if (AEROUT_ACK_sync_negedge) begin
-                AEROUT_REQ       <= 1'b0;
-                AEROUT_CTRL_BUSY <= 1'b0;
-            end
+                AEROUT_REQ_reg       <= 1'b0;
+                AEROUT_CTRL_BUSY_reg <= 1'b0;
+            end 
+            // For Debugging
+            // else begin
+            //     AEROUT_ADDR_reg      <= 8'b0;
+            //     AEROUT_REQ_reg       <= 1'b0;
+            //     AEROUT_CTRL_BUSY_reg <= 1'b0;
+            // end 
         end
 	end
 
